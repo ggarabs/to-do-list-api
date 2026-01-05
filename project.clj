@@ -6,8 +6,8 @@
   :dependencies [[org.clojure/clojure "1.12.2"]
                  [http-kit "2.7.0"]
                  [compojure "1.5.1"]
-                 [seancorfield/next.jdbc "1.3.909"]
-                 [com.zaxxer/HirakiCP "5.1.0"]
+                 [com.github.seancorfield/next.jdbc "1.3.909"]
+                 [com.zaxxer/HikariCP "5.1.0"]
                  [org.postgresql/postgresql "42.7.3"]
                  [aero "1.1.6"]]
   :main ^:skip-aot to-do-list-api.core

@@ -7,7 +7,7 @@
                  [http-kit "2.7.0"]
                  [compojure "1.5.1"]
                  [com.github.seancorfield/next.jdbc "1.3.909"]
-                 [com.zaxxer/HikariCP "5.1.0"]
+                 [hikari-cp "3.3.0"]
                  [org.postgresql/postgresql "42.7.3"]
                  [aero "1.1.6"]]
   :main ^:skip-aot to-do-list-api.core

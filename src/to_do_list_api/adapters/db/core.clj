@@ -1,22 +1,23 @@
 (ns to-do-list-api.adapters.db.core
   (:require
-   [hiraki-cp.core :as hiraki]
-   [aero.core :refer [read-config]]))
+   [hikari-cp.core :as hikari]
+   [aero.core :as aero]
+   [clojure.java.io :as io]))
 
-(defonce datasource
-  (delay 
-    (let [config (read-config "config.edn")
-          db (:db config)]
-     (hiraki/make-datasource
-     {:jdbc-url (:jdbc-url db)
-      :username (:username db)
-      :password (:password db)
-      :maximum-pool-size (:maximum-pool-size db)}))))
+(defn read-config []
+  (aero/read-config (io/resource "config.edn")))
 
-(defn get-datasource
-  []
-  @datasource)
+(defn make-datasource [{:keys [db]}] 
+   (hikari/make-datasource 
+    {:jdbc-url (:jdbc-url db)
+    :username (:username db)
+    :password (:password db)
+    :maximum-pool-size (:maximum-pool-size db)}))
 
-(defn get-db
-  []
-  {:datasource (get-datasource)})
+(defn start []
+  (let [config (read-config)
+        ds (make-datasource config)]
+    {:datasource ds}))
+
+(defn stop [datasource]
+  (hikari/close-datasource datasource))

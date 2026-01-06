@@ -4,8 +4,8 @@
    [aero.core :as aero]
    [clojure.java.io :as io]))
 
-(defn read-config []
-  (aero/read-config (io/resource "config.edn")))
+(defn read-config [file]
+  (aero/read-config (io/resource file)))
 
 (defn make-datasource [{:keys [db]}] 
    (hikari/make-datasource 
@@ -15,7 +15,7 @@
     :maximum-pool-size (:maximum-pool-size db)}))
 
 (defn start []
-  (let [config (read-config)
+  (let [config (read-config "db.edn")
         ds (make-datasource config)]
     {:datasource ds}))
 

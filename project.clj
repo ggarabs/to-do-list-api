@@ -10,7 +10,9 @@
                  [hikari-cp "3.3.0"]
                  [org.postgresql/postgresql "42.7.3"]
                  [aero "1.1.6"]
-                 [migratus/migratus "1.5.8"]]
+                 [migratus/migratus "1.5.8"]
+                 [ring/ring-core "1.15.3"]
+                 [ring/ring-json "0.5.1"]]
   :main ^:skip-aot to-do-list-api.core
   :aliases {"migrate" ["run" "-m" "to-do-list-api.migrations"]}
   :target-path "target/%s"

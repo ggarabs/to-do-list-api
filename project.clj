@@ -12,7 +12,8 @@
                  [aero "1.1.6"]
                  [migratus/migratus "1.5.8"]
                  [ring/ring-core "1.15.3"]
-                 [ring/ring-json "0.5.1"]]
+                 [ring/ring-json "0.5.1"]
+                 [metosin/malli "0.20.0"]]
   :main ^:skip-aot to-do-list-api.core
   :aliases {"migrate" ["run" "-m" "to-do-list-api.migrations"]}
   :target-path "target/%s"

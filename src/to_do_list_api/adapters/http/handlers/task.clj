@@ -1,28 +1,40 @@
 (ns to-do-list-api.adapters.http.handlers.task
   (:require [to-do-list-api.adapters.db.task :as task]
             [malli.core :as m]
-            [to-do-list-api.schemas.task :refer [CreateTaskInput]]
-            [to-do-list-api.usecases.task :as usecases]))
+            [to-do-list-api.schemas.task :refer :all]
+            [to-do-list-api.usecases.task :as usecases]
+            [malli.transform :as mt]))
 
 (defn get-all-tasks [{:keys [db]}]
-  (try 
+  (try
     {:status 200
-     :headers {"Content-Type" "application/json"}
      :body (task/find-all-tasks db)}
-  (catch clojure.lang.ExceptionInfo err
-    {:status 500
-     :body {:error err}})))
+    (catch clojure.lang.ExceptionInfo err
+      {:status 500
+       :body {:error err}})))
 
 (defn post-task [{:keys [db body]}]
   (let [ds-config db
         task body]
-  (if-not (m/validate CreateTaskInput task)
-    {:status 400
-     :headers {"Content-Type" "application/json"}
-     :body {:error "invalid schema"}} 
-    (do
-      (usecases/create-task! ds-config task)
-      {:status 201 
-       :headers {"Content-Type" "application/json"} 
-       :body {:message "deu bom"}}))
-))
+    (if-not (m/validate CreateTaskInput task)
+      {:status 422
+       :body {:error "invalid schema"}}
+      (do
+        (usecases/create-task! ds-config task)
+        {:status 201
+         :body {:message "task created successfully"}}))))
+
+(defn modify-task [{:keys [db route-params body]}]
+  (try
+    (let [id (m/decode [:uuid] (:id route-params) mt/string-transformer)
+          ds-config db
+          changes body]
+      (when-not (m/validate ModifyTaskInput changes)
+        (throw (ex-info "invalid body" {:type :invalid-body})))
+      (usecases/modify-task! ds-config id changes) 
+      {:status 204}) 
+    (catch clojure.lang.ExceptionInfo err
+      (case (:type (ex-data err))
+        :invalid-body {:status 422 :body {:error "invalid body"}}
+        :task/not-found {:status 404 :body {:error "task not found"}}
+        {:status 400 :body {:error "invalid id"}}))))

@@ -7,6 +7,7 @@
 (defroutes app-routes
   (GET "/" [] {:body {:message "API ok"}})
   (GET "/task" req (task/get-all-tasks req))
+  (GET "/task/:id" req (task/get-task-by-id req))
   (POST "/task" req (task/post-task req))
   (PUT "/task/:id" req (task/modify-task req))
   (DELETE "/task/:id" req (task/remove-task req))

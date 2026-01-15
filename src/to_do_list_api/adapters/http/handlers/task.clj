@@ -32,9 +32,23 @@
       (when-not (m/validate ModifyTaskInput changes)
         (throw (ex-info "invalid body" {:type :invalid-body})))
       (usecases/modify-task! ds-config id changes) 
-      {:status 204}) 
+      {:status 204})
     (catch clojure.lang.ExceptionInfo err
       (case (:type (ex-data err))
         :invalid-body {:status 422 :body {:error "invalid body"}}
+        :task/not-found {:status 404 :body {:error "task not found"}}
+        {:status 400 :body {:error "invalid id"}}))))
+
+(defn remove-task [{:keys [db route-params body]}]
+  (try
+    (let [id (m/coerce [:uuid] (:id route-params) mt/string-transformer)
+          ds-config db]
+      (when-not (nil? body)
+        (throw (ex-info "body not recognized" {:type :invalid-body})))
+      (usecases/remove-task! ds-config id)
+      {:status 200 :body {:message "task removed successfully"}})
+    (catch clojure.lang.ExceptionInfo err
+      (case (:type (ex-data err))
+        :invalid-body {:status 422 :body {:error "body not recognized"}}
         :task/not-found {:status 404 :body {:error "task not found"}}
         {:status 400 :body {:error "invalid id"}}))))

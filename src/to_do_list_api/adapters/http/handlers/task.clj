@@ -26,7 +26,7 @@
 
 (defn modify-task [{:keys [db route-params body]}]
   (try
-    (let [id (m/decode [:uuid] (:id route-params) mt/string-transformer)
+    (let [id (m/coerce [:uuid] (:id route-params) mt/string-transformer)
           ds-config db
           changes body]
       (when-not (m/validate ModifyTaskInput changes)

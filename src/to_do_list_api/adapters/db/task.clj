@@ -15,3 +15,6 @@
 (defn alter-task [db id changes]
   (let [changes-with-timestamp (assoc changes :updated_at (java.time.Instant/now))]
     (sql/update! db :task changes-with-timestamp {:id id})))
+
+(defn delete-task [db id]
+  (sql/delete! db :task {:id id}))

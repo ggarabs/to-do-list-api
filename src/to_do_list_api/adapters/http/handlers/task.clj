@@ -13,6 +13,17 @@
       {:status 500
        :body {:error err}})))
 
+(defn get-task-by-id [{:keys [db route-params]}]
+  (try
+    (let [id (m/coerce [:uuid] (:id route-params) mt/string-transformer)
+          ds-config db
+          response (usecases/find-task-by-id! ds-config id)]
+      {:status 200 :body response})
+    (catch clojure.lang.ExceptionInfo err
+      (case (:type (ex-data err))
+        :not-found {:status 404 :body {:error "task not found"}}
+        {:status 500 :body {:error "internal server error"}}))))
+
 (defn post-task [{:keys [db body]}]
   (let [ds-config db
         task body]

@@ -9,6 +9,9 @@
 (defn find-all-tasks [db]
   (jdbc/execute! db ["SELECT * FROM task"]))
 
+(defn find-task-by-id [db id]
+  (sql/get-by-id db :task id))
+
 (defn insert-task [db task]
   (sql/insert! db :task task))
 

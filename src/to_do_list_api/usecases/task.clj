@@ -5,10 +5,7 @@
   (db/insert-task db-source task))
 
 (defn modify-task! [db-source id changes]
-  (let [uuid (try
-               (parse-uuid id)
-               (catch Exception _ nil))
-        response-body (db/alter-task db-source uuid changes)] 
+  (let [response-body (db/alter-task db-source id changes)]
     (when (zero? (:next.jdbc/update-count response-body))
       (throw (ex-info "task not found" {:type :not-found})))))
 
